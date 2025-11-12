@@ -1,7 +1,38 @@
-import { Link, NavLink, Outlet } from 'react-router-dom'
-import { Crosshair } from 'lucide-react'
+import { Link, NavLink, Outlet, useLocation } from 'react-router-dom'
+import { Crosshair, ChevronDown } from 'lucide-react'
+import { useEffect, useRef, useState } from 'react'
+
+function useDropdown() {
+  const [open, setOpen] = useState(false)
+  const ref = useRef(null)
+
+  useEffect(() => {
+    function onClick(e) {
+      if (!ref.current) return
+      if (!ref.current.contains(e.target)) setOpen(false)
+    }
+    function onKey(e) {
+      if (e.key === 'Escape') setOpen(false)
+    }
+    document.addEventListener('mousedown', onClick)
+    document.addEventListener('keydown', onKey)
+    return () => {
+      document.removeEventListener('mousedown', onClick)
+      document.removeEventListener('keydown', onKey)
+    }
+  }, [])
+
+  return { open, setOpen, ref }
+}
 
 export default function Layout() {
+  const { pathname } = useLocation()
+  const { open, setOpen, ref } = useDropdown()
+
+  const isActive = (to) => pathname === to
+
+  const linkBase = 'block w-full text-left px-3 py-2 rounded-md text-sm'
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-teal-50">
       <header className="relative isolate">
@@ -29,14 +60,85 @@ export default function Layout() {
                 </p>
               </div>
             </div>
+
+            {/* Desktop nav with dropdown */}
             <nav className="hidden md:flex items-center gap-3 text-sm">
-              <NavLink to="/" className={({isActive}) => `px-3 py-2 rounded-lg ${isActive ? 'text-teal-700 bg-teal-50' : 'text-gray-600 hover:text-teal-700'}`}>Beranda</NavLink>
-              <NavLink to="/jadwal-dokter" className={({isActive}) => `px-3 py-2 rounded-lg ${isActive ? 'text-teal-700 bg-teal-50' : 'text-gray-600 hover:text-teal-700'}`}>Jadwal Dokter</NavLink>
-              <NavLink to="/ceklis-rujukan" className={({isActive}) => `px-3 py-2 rounded-lg ${isActive ? 'text-teal-700 bg-teal-50' : 'text-gray-600 hover:text-teal-700'}`}>Ceklis Rujukan</NavLink>
-              <NavLink to="/peta-faskes" className={({isActive}) => `px-3 py-2 rounded-lg ${isActive ? 'text-teal-700 bg-teal-50' : 'text-gray-600 hover:text-teal-700'}`}>Peta Faskes</NavLink>
-              <NavLink to="/edukasi" className={({isActive}) => `px-3 py-2 rounded-lg ${isActive ? 'text-teal-700 bg-teal-50' : 'text-gray-600 hover:text-teal-700'}`}>Edukasi</NavLink>
-              <NavLink to="/narahubung-fktp" className={({isActive}) => `px-3 py-2 rounded-lg ${isActive ? 'text-teal-700 bg-teal-50' : 'text-gray-600 hover:text-teal-700'}`}>Narahubung</NavLink>
-              <NavLink to="/panduan-rujukan" className={({isActive}) => `px-3 py-2 rounded-lg ${isActive ? 'text-teal-700 bg-teal-50' : 'text-gray-600 hover:text-teal-700'}`}>Panduan</NavLink>
+              <NavLink
+                to="/"
+                className={({ isActive }) => `px-3 py-2 rounded-lg ${isActive ? 'text-teal-700 bg-teal-50' : 'text-gray-600 hover:text-teal-700'}`}
+              >
+                Beranda
+              </NavLink>
+
+              <div className="relative" ref={ref}>
+                <button
+                  type="button"
+                  aria-haspopup="menu"
+                  aria-expanded={open}
+                  onClick={() => setOpen((v) => !v)}
+                  className={`inline-flex items-center gap-1 px-3 py-2 rounded-lg border border-transparent transition-colors ${open ? 'bg-white text-teal-700 shadow-sm' : 'text-gray-600 hover:text-teal-700 hover:bg-teal-50'}`}
+                >
+                  Fitur
+                  <ChevronDown className={`h-4 w-4 transition-transform ${open ? 'rotate-180' : ''}`} />
+                </button>
+
+                {open && (
+                  <div
+                    role="menu"
+                    aria-label="Menu fitur"
+                    className="absolute right-0 mt-2 w-56 rounded-xl border border-teal-100 bg-white/95 shadow-lg backdrop-blur-sm p-2"
+                  >
+                    <NavLink
+                      to="/jadwal-dokter"
+                      onClick={() => setOpen(false)}
+                      className={`${linkBase} ${isActive('/jadwal-dokter') ? 'bg-teal-50 text-teal-700' : 'text-gray-700 hover:bg-teal-50 hover:text-teal-700'}`}
+                      role="menuitem"
+                    >
+                      Jadwal Dokter
+                    </NavLink>
+                    <NavLink
+                      to="/ceklis-rujukan"
+                      onClick={() => setOpen(false)}
+                      className={`${linkBase} ${isActive('/ceklis-rujukan') ? 'bg-teal-50 text-teal-700' : 'text-gray-700 hover:bg-teal-50 hover:text-teal-700'}`}
+                      role="menuitem"
+                    >
+                      Ceklis Persyaratan Rujukan
+                    </NavLink>
+                    <NavLink
+                      to="/peta-faskes"
+                      onClick={() => setOpen(false)}
+                      className={`${linkBase} ${isActive('/peta-faskes') ? 'bg-teal-50 text-teal-700' : 'text-gray-700 hover:bg-teal-50 hover:text-teal-700'}`}
+                      role="menuitem"
+                    >
+                      Peta Fasilitas Kesehatan
+                    </NavLink>
+                    <NavLink
+                      to="/edukasi"
+                      onClick={() => setOpen(false)}
+                      className={`${linkBase} ${isActive('/edukasi') ? 'bg-teal-50 text-teal-700' : 'text-gray-700 hover:bg-teal-50 hover:text-teal-700'}`}
+                      role="menuitem"
+                    >
+                      Edukasi Kesehatan
+                    </NavLink>
+                    <NavLink
+                      to="/narahubung-fktp"
+                      onClick={() => setOpen(false)}
+                      className={`${linkBase} ${isActive('/narahubung-fktp') ? 'bg-teal-50 text-teal-700' : 'text-gray-700 hover:bg-teal-50 hover:text-teal-700'}`}
+                      role="menuitem"
+                    >
+                      Narahubung FKTP
+                    </NavLink>
+                    <NavLink
+                      to="/panduan-rujukan"
+                      onClick={() => setOpen(false)}
+                      className={`${linkBase} ${isActive('/panduan-rujukan') ? 'bg-teal-50 text-teal-700' : 'text-gray-700 hover:bg-teal-50 hover:text-teal-700'}`}
+                      role="menuitem"
+                    >
+                      Panduan Rujukan
+                    </NavLink>
+                  </div>
+                )}
+              </div>
             </nav>
           </div>
         </div>
