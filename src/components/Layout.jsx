@@ -1,5 +1,5 @@
 import { Link, NavLink, Outlet, useLocation } from 'react-router-dom'
-import { Crosshair, ChevronDown, Menu, X } from 'lucide-react'
+import { Crosshair, ChevronDown, Menu, X, Calendar, ClipboardCheck, MapPin, BookOpen, Phone, FileText } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 
 function useDropdown() {
@@ -25,6 +25,15 @@ function useDropdown() {
   return { open, setOpen, ref }
 }
 
+const fiturLinks = [
+  { to: '/jadwal-dokter', label: 'Jadwal Dokter', Icon: Calendar },
+  { to: '/ceklis-rujukan', label: 'Ceklis Persyaratan Rujukan', Icon: ClipboardCheck },
+  { to: '/peta-faskes', label: 'Peta Fasilitas Kesehatan', Icon: MapPin },
+  { to: '/edukasi', label: 'Edukasi Kesehatan', Icon: BookOpen },
+  { to: '/narahubung-fktp', label: 'Narahubung FKTP', Icon: Phone },
+  { to: '/panduan-rujukan', label: 'Panduan Rujukan', Icon: FileText },
+]
+
 export default function Layout() {
   const { pathname } = useLocation()
   const { open, setOpen, ref } = useDropdown() // desktop dropdown
@@ -41,8 +50,8 @@ export default function Layout() {
 
   const isActive = (to) => pathname === to
 
-  const linkBase = 'block w-full text-left px-3 py-2 rounded-md text-sm'
-  const mobileLink = 'block w-full text-left px-3 py-2 rounded-lg text-base'
+  const linkBase = 'flex items-center gap-2 w-full text-left px-3 py-2 rounded-md text-sm transition-colors'
+  const mobileLink = 'flex items-center gap-2 w-full text-left px-3 py-2 rounded-lg text-base transition-colors'
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-teal-50">
@@ -74,8 +83,9 @@ export default function Layout() {
 
             {/* Mobile hamburger */}
             <button
-              className="md:hidden inline-flex items-center justify-center h-10 w-10 rounded-lg border border-teal-200 text-teal-700"
+              className="md:hidden inline-flex items-center justify-center h-10 w-10 rounded-lg border border-teal-200 text-teal-700 transition-colors hover:bg-teal-50"
               aria-label={mobileOpen ? 'Tutup menu' : 'Buka menu'}
+              aria-expanded={mobileOpen}
               onClick={() => setMobileOpen((v) => !v)}
             >
               {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
@@ -85,7 +95,7 @@ export default function Layout() {
             <nav className="hidden md:flex items-center gap-3 text-sm">
               <NavLink
                 to="/"
-                className={({ isActive }) => `px-3 py-2 rounded-lg ${isActive ? 'text-teal-700 bg-teal-50' : 'text-gray-600 hover:text-teal-700'}`}
+                className={({ isActive }) => `px-3 py-2 rounded-lg transition-colors ${isActive ? 'text-teal-700 bg-teal-50' : 'text-gray-600 hover:text-teal-700 hover:bg-teal-50'}`}
               >
                 Beranda
               </NavLink>
@@ -96,66 +106,34 @@ export default function Layout() {
                   aria-haspopup="menu"
                   aria-expanded={open}
                   onClick={() => setOpen((v) => !v)}
-                  className={`inline-flex items-center gap-1 px-3 py-2 rounded-lg border border-transparent transition-colors ${open ? 'bg-white text-teal-700 shadow-sm' : 'text-gray-600 hover:text-teal-700 hover:bg-teal-50'}`}
+                  className={`inline-flex items-center gap-1 px-3 py-2 rounded-lg border border-transparent transition-all duration-200 ${open ? 'bg-white text-teal-700 shadow-sm' : 'text-gray-600 hover:text-teal-700 hover:bg-teal-50'}`}
                 >
                   Fitur
-                  <ChevronDown className={`h-4 w-4 transition-transform ${open ? 'rotate-180' : ''}`} />
+                  <ChevronDown className={`h-4 w-4 transition-transform duration-200 ${open ? 'rotate-180' : ''}`} />
                 </button>
 
                 {open && (
                   <div
                     role="menu"
                     aria-label="Menu fitur"
-                    className="absolute right-0 mt-2 w-56 rounded-xl border border-teal-100 bg-white/95 shadow-lg backdrop-blur-sm p-2"
+                    className="absolute right-0 mt-2 w-64 rounded-xl border border-teal-100 bg-white/95 shadow-lg backdrop-blur-sm p-2 origin-top-right animate-[dropdown_160ms_ease-out]"
+                    style={{
+                      animationName: 'dropdown',
+                    }}
                   >
-                    <NavLink
-                      to="/jadwal-dokter"
-                      onClick={() => setOpen(false)}
-                      className={`${linkBase} ${isActive('/jadwal-dokter') ? 'bg-teal-50 text-teal-700' : 'text-gray-700 hover:bg-teal-50 hover:text-teal-700'}`}
-                      role="menuitem"
-                    >
-                      Jadwal Dokter
-                    </NavLink>
-                    <NavLink
-                      to="/ceklis-rujukan"
-                      onClick={() => setOpen(false)}
-                      className={`${linkBase} ${isActive('/ceklis-rujukan') ? 'bg-teal-50 text-teal-700' : 'text-gray-700 hover:bg-teal-50 hover:text-teal-700'}`}
-                      role="menuitem"
-                    >
-                      Ceklis Persyaratan Rujukan
-                    </NavLink>
-                    <NavLink
-                      to="/peta-faskes"
-                      onClick={() => setOpen(false)}
-                      className={`${linkBase} ${isActive('/peta-faskes') ? 'bg-teal-50 text-teal-700' : 'text-gray-700 hover:bg-teal-50 hover:text-teal-700'}`}
-                      role="menuitem"
-                    >
-                      Peta Fasilitas Kesehatan
-                    </NavLink>
-                    <NavLink
-                      to="/edukasi"
-                      onClick={() => setOpen(false)}
-                      className={`${linkBase} ${isActive('/edukasi') ? 'bg-teal-50 text-teal-700' : 'text-gray-700 hover:bg-teal-50 hover:text-teal-700'}`}
-                      role="menuitem"
-                    >
-                      Edukasi Kesehatan
-                    </NavLink>
-                    <NavLink
-                      to="/narahubung-fktp"
-                      onClick={() => setOpen(false)}
-                      className={`${linkBase} ${isActive('/narahubung-fktp') ? 'bg-teal-50 text-teal-700' : 'text-gray-700 hover:bg-teal-50 hover:text-teal-700'}`}
-                      role="menuitem"
-                    >
-                      Narahubung FKTP
-                    </NavLink>
-                    <NavLink
-                      to="/panduan-rujukan"
-                      onClick={() => setOpen(false)}
-                      className={`${linkBase} ${isActive('/panduan-rujukan') ? 'bg-teal-50 text-teal-700' : 'text-gray-700 hover:bg-teal-50 hover:text-teal-700'}`}
-                      role="menuitem"
-                    >
-                      Panduan Rujukan
-                    </NavLink>
+                    <style>{`@keyframes dropdown{0%{opacity:0;transform:translateY(-6px) scale(0.98)}100%{opacity:1;transform:translateY(0) scale(1)}}`}</style>
+                    {fiturLinks.map(({ to, label, Icon }) => (
+                      <NavLink
+                        key={to}
+                        to={to}
+                        onClick={() => setOpen(false)}
+                        className={`${linkBase} ${isActive(to) ? 'bg-teal-50 text-teal-700' : 'text-gray-700 hover:bg-teal-50 hover:text-teal-700'}`}
+                        role="menuitem"
+                      >
+                        <Icon className="h-4 w-4 text-teal-500" />
+                        <span>{label}</span>
+                      </NavLink>
+                    ))}
                   </div>
                 )}
               </div>
@@ -163,75 +141,51 @@ export default function Layout() {
           </div>
 
           {/* Mobile slide-down menu */}
-          {mobileOpen && (
-            <div className="md:hidden mt-4 rounded-2xl border border-teal-100 bg-white/80 shadow-lg backdrop-blur p-2">
+          <div
+            className={`md:hidden transition-[max-height,opacity,transform] duration-300 ease-out ${mobileOpen ? 'max-h-[520px] opacity-100 translate-y-0' : 'max-h-0 opacity-0 -translate-y-1'} overflow-hidden`}
+            aria-hidden={!mobileOpen}
+          >
+            <div className="mt-4 rounded-2xl border border-teal-100 bg-white/80 shadow-lg backdrop-blur p-2">
               <NavLink
                 to="/"
                 onClick={() => setMobileOpen(false)}
                 className={({ isActive }) => `${mobileLink} ${isActive ? 'bg-teal-50 text-teal-700' : 'text-gray-700 hover:bg-teal-50 hover:text-teal-700'}`}
               >
+                {/* Home visual using crosshair mark */}
+                <Crosshair className="h-5 w-5 text-teal-500" />
                 Beranda
               </NavLink>
 
               <button
                 type="button"
-                className="w-full flex items-center justify-between px-3 py-2 rounded-lg text-gray-700 hover:bg-teal-50 hover:text-teal-700"
+                className="w-full flex items-center justify-between px-3 py-2 rounded-lg text-gray-700 hover:bg-teal-50 hover:text-teal-700 transition-colors"
                 onClick={() => setMobileFiturOpen((v) => !v)}
                 aria-expanded={mobileFiturOpen}
                 aria-controls="mobile-fitur-panel"
               >
-                <span>Fitur</span>
-                <ChevronDown className={`h-5 w-5 transition-transform ${mobileFiturOpen ? 'rotate-180' : ''}`} />
+                <span className="inline-flex items-center gap-2"><ChevronDown className={`h-5 w-5 transition-transform ${mobileFiturOpen ? 'rotate-180' : ''}`} />Fitur</span>
               </button>
 
-              {mobileFiturOpen && (
-                <div id="mobile-fitur-panel" className="mt-1 space-y-1 pl-2">
-                  <NavLink
-                    to="/jadwal-dokter"
-                    onClick={() => setMobileOpen(false)}
-                    className={({ isActive }) => `${mobileLink} ${isActive ? 'bg-teal-50 text-teal-700' : 'text-gray-700 hover:bg-teal-50 hover:text-teal-700'}`}
-                  >
-                    Jadwal Dokter
-                  </NavLink>
-                  <NavLink
-                    to="/ceklis-rujukan"
-                    onClick={() => setMobileOpen(false)}
-                    className={({ isActive }) => `${mobileLink} ${isActive ? 'bg-teal-50 text-teal-700' : 'text-gray-700 hover:bg-teal-50 hover:text-teal-700'}`}
-                  >
-                    Ceklis Persyaratan Rujukan
-                  </NavLink>
-                  <NavLink
-                    to="/peta-faskes"
-                    onClick={() => setMobileOpen(false)}
-                    className={({ isActive }) => `${mobileLink} ${isActive ? 'bg-teal-50 text-teal-700' : 'text-gray-700 hover:bg-teal-50 hover:text-teal-700'}`}
-                  >
-                    Peta Fasilitas Kesehatan
-                  </NavLink>
-                  <NavLink
-                    to="/edukasi"
-                    onClick={() => setMobileOpen(false)}
-                    className={({ isActive }) => `${mobileLink} ${isActive ? 'bg-teal-50 text-teal-700' : 'text-gray-700 hover:bg-teal-50 hover:text-teal-700'}`}
-                  >
-                    Edukasi Kesehatan
-                  </NavLink>
-                  <NavLink
-                    to="/narahubung-fktp"
-                    onClick={() => setMobileOpen(false)}
-                    className={({ isActive }) => `${mobileLink} ${isActive ? 'bg-teal-50 text-teal-700' : 'text-gray-700 hover:bg-teal-50 hover:text-teal-700'}`}
-                  >
-                    Narahubung FKTP
-                  </NavLink>
-                  <NavLink
-                    to="/panduan-rujukan"
-                    onClick={() => setMobileOpen(false)}
-                    className={({ isActive }) => `${mobileLink} ${isActive ? 'bg-teal-50 text-teal-700' : 'text-gray-700 hover:bg-teal-50 hover:text-teal-700'}`}
-                  >
-                    Panduan Rujukan
-                  </NavLink>
+              <div
+                id="mobile-fitur-panel"
+                className={`grid transition-all duration-300 ease-out ${mobileFiturOpen ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'}`}
+              >
+                <div className="overflow-hidden mt-1 space-y-1 pl-2">
+                  {fiturLinks.map(({ to, label, Icon }) => (
+                    <NavLink
+                      key={to}
+                      to={to}
+                      onClick={() => setMobileOpen(false)}
+                      className={({ isActive }) => `${mobileLink} ${isActive ? 'bg-teal-50 text-teal-700' : 'text-gray-700 hover:bg-teal-50 hover:text-teal-700'}`}
+                    >
+                      <Icon className="h-5 w-5 text-teal-500" />
+                      <span>{label}</span>
+                    </NavLink>
+                  ))}
                 </div>
-              )}
+              </div>
             </div>
-          )}
+          </div>
         </div>
       </header>
 
