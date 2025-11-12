@@ -10,6 +10,7 @@ import {
   Crosshair
 } from 'lucide-react'
 import FeatureCard from './components/FeatureCard'
+import { Link } from 'react-router-dom'
 
 const brand = {
   primary: 'text-teal-700',
@@ -26,37 +27,43 @@ export default function App() {
         title: 'Jadwal Dokter',
         icon: Calendar,
         accent: 'teal',
-        description: 'Lihat jadwal praktik dokter di fasilitas kesehatan terdekat.'
+        description: 'Lihat jadwal praktik dokter di fasilitas kesehatan terdekat.',
+        to: '/jadwal-dokter'
       },
       {
         title: 'Ceklis Persyaratan Rujukan',
         icon: CheckSquare,
         accent: 'blue',
-        description: 'Panduan singkat untuk memastikan berkas rujukan Anda lengkap.'
+        description: 'Panduan singkat untuk memastikan berkas rujukan Anda lengkap.',
+        to: '/ceklis-rujukan'
       },
       {
         title: 'Peta Fasilitas Kesehatan',
         icon: MapPin,
         accent: 'teal',
-        description: 'Telusuri lokasi rumah sakit dan klinik rujukan di Kota Bogor.'
+        description: 'Telusuri lokasi rumah sakit dan klinik rujukan di Kota Bogor.',
+        to: '/peta-faskes'
       },
       {
         title: 'Edukasi Kesehatan',
         icon: GraduationCap,
         accent: 'blue',
-        description: 'Artikel dan infografis singkat untuk hidup sehat dan bugar.'
+        description: 'Artikel dan infografis singkat untuk hidup sehat dan bugar.',
+        to: '/edukasi'
       },
       {
         title: 'Narahubung FKTP',
         icon: Phone,
         accent: 'teal',
-        description: 'Kontak penting fasilitas kesehatan tingkat pertama Anda.'
+        description: 'Kontak penting fasilitas kesehatan tingkat pertama Anda.',
+        to: '/narahubung-fktp'
       },
       {
         title: 'Panduan Rujukan',
         icon: BookOpen,
         accent: 'blue',
-        description: 'Langkah-langkah rujukan yang jelas dan mudah diikuti.'
+        description: 'Langkah-langkah rujukan yang jelas dan mudah diikuti.',
+        to: '/panduan-rujukan'
       },
     ],
     []
@@ -71,13 +78,13 @@ export default function App() {
 
         <div className="mx-auto max-w-6xl px-4 sm:px-6 pt-10 sm:pt-14">
           <div className="flex items-center gap-3">
-            <div className="inline-flex h-10 w-10 items-center justify-center rounded-lg bg-teal-100">
-              {/* Medical cross icon built with two rectangles */}
+            <Link to="/" className="inline-flex h-10 w-10 items-center justify-center rounded-lg bg-teal-100">
+              {/* Medical cross icon */}
               <div className="relative h-6 w-6">
                 <div className="absolute inset-0 m-auto h-6 w-2 bg-teal-600 rounded" />
                 <div className="absolute inset-0 m-auto h-2 w-6 bg-teal-600 rounded" />
               </div>
-            </div>
+            </Link>
             <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-gray-800">
               Selamat Datang di <span className="text-teal-700">MEDILINK</span>
             </h1>
